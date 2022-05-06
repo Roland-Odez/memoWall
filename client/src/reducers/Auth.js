@@ -1,7 +1,13 @@
-import { AUTH, LOGOUT } from '../constants/actionTypes'
+import { AUTH, LOGOUT, LOGIN_STATUS, ALERT } from '../constants/actionTypes'
 
-const auth = (state = { authData: null }, action) => {
+const auth = (state = { authData: null, openAlert: false, status: false, message: '' }, action) => {
     switch (action.type) {
+        case ALERT:
+            return { ...state, openAlert: action.open }
+
+        case LOGIN_STATUS:
+            return { ...state, status: action.status, message: action.message }
+
         case AUTH:
             localStorage.setItem('profile', JSON.stringify({ ...action?.data }))
             return { ...state, authData: action?.data }

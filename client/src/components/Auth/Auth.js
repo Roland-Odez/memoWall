@@ -5,10 +5,13 @@ import { GoogleLogin } from 'react-google-login'
 import Icon from './Icon'
 import { useDispatch } from 'react-redux'
 
+
 import useStyles from './styles'
 import Input from './Input'
 import { signin, signup } from '../../actions/auth'
 import { useHistory } from 'react-router-dom'
+import { ALERT, AUTH, LOGIN_STATUS } from '../../constants/actionTypes'
+
 
 
 const initialState = { firstName: '', lastName: '', email: '', password: '', confirmPassword: '' }
@@ -22,6 +25,8 @@ const Auth = () => {
     const [isSignUp, setIsSignUp] = useState(false)
     const [formData, setFormData] = useState(initialState)
     const handleShowPassword = () => setShowPassword((prevShowPassword) => !prevShowPassword)
+
+
 
 
     const handleSubmit = (e) => {
@@ -47,7 +52,9 @@ const Auth = () => {
         const result = res?.profileObj
         const token = res?.tokenId
         try {
-            dispatch({ type: 'AUTH', data: { result, token } })
+            dispatch({ type: AUTH, data: { result, token } })
+            dispatch({ type: LOGIN_STATUS, status: true, message: 'Login successfully!' })
+            dispatch({ type: ALERT, open: true })
             history.push('/')
         } catch (error) {
             console.log(error)
@@ -55,11 +62,17 @@ const Auth = () => {
     }
 
     const googleFailure = (error) => {
+        dispatch({ type: ALERT, open: true })
+        dispatch({ type: LOGIN_STATUS, status: false, message: 'Login failed, invalid email or password' })
         console.log(error)
     }
 
 
+
+
     return (
+        <>
+
         <Container component='main' maxWidth='xs'>
             <Paper className={classes.paper} elevation={3}>
                 <Avatar className={classes.avatar}>
@@ -100,6 +113,7 @@ const Auth = () => {
                 </form>
             </Paper>
         </Container>
+        </>
     )
 }
 
